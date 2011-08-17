@@ -1,0 +1,91 @@
+Reservoir sampling
+From Wikipedia, the free encyclopedia
+
+This article has multiple issues. Please help improve it or discuss these issues on the talk page.
+It may be confusing or unclear to readers. Tagged since December 2009.
+It needs attention from an expert on the subject. WikiProject Computing or the Computing Portal may be able to help recruit one. Tagged since February 2010.
+Very few or no other articles link to it. Please help introduce links to this page from other articles related to it. Tagged since December 2009.
+It may need to be wikified to meet Wikipedia's quality standards. Tagged since December 2009.
+Reservoir sampling is a family of randomized algorithms for randomly choosing k samples from a list S containing n items, where n is either a very large or unknown number. Typically n is large enough that the list doesn't fit into main memory. The most common example was labelled Algorithm R by Jeffrey Vitter in his paper on the subject.[1] Here is a nice explanation of reservoir sampling [2]
+This simple O(n) algorithm as described in the Dictionary of Algorithms and Data Structures[3] consists of the following steps (assuming that the arrays are one-based, and that the number of items to select, k, is smaller than the size of the source array, S):
+array R[k];    // result
+integer i, j;
+
+// fill the reservoir array
+for each i in 1 to k do
+    R[i] := S[i]
+done;
+
+// replace elements with gradually decreasing probability
+for each i in k+1 to length(S) do
+    j := random(1, i);   // important: inclusive range
+    if j <= k then
+        R[j] := S[i]
+    fi
+done
+Contents [hide]
+1 Relation to Fisher-Yates shuffle
+2 Example implementation
+3 See also
+4 References
+[edit]Relation to Fisher-Yates shuffle
+
+Suppose one wanted to draw k random cards from a deck of playing cards (i.e., n=52). A natural approach would be to shuffle the deck and then take the top k cards. In the general case, the shuffle also needs to work even if the number of cards in the deck is not known in advance, a condition which is satisfied by the inside-out version of the Fisher-Yates shuffle:
+To initialize an array a of n elements to a randomly shuffled copy of S, both 0-based:
+   a[0] ← S[0]
+   for i from 1 to n - 1 do
+       r ← random (0 .. i)
+       a[i] ← a[r]
+       a[r] ← S[i]
+Note that although the rest of the cards are shuffled, only the top k are important in the present context. Therefore, the array a need only track the cards in the top k positions while performing the shuffle, reducing the amount of memory needed. Truncating a to length k, the algorithm is modified accordingly:
+To initialize an array a to k random elements of S (which is of length n), both 0-based:
+   a[0] ← S[0]
+   for i from 1 to k - 1 do
+       r ← random (0 .. i)
+       a[i] ← a[r]
+       a[r] ← S[i]
+   for i from k to n - 1 do
+       r ← random (0 .. i)
+       if (r < k) then a[r] ← S[i]
+Since the order of the first k cards is immaterial, the first loop can be removed and a can be initialized to be the first k items of S. This yields Algorithm R.
+[edit]Example implementation
+
+The following is a simple implementation of the algorithm in Python that samples the set of English Wikipedia page titles:
+import random
+SAMPLE_COUNT = 10
+ 
+# Force the value of the seed so the results are repeatable
+random.seed(12345)
+ 
+sample_titles = []
+for index, line in enumerate(open("enwiki-20091103-all-titles-in-ns0")):
+        # Generate the reservoir
+        if index < SAMPLE_COUNT:
+                sample_titles.append(line)
+        else:                   
+                # Randomly replace elements in the reservoir
+                # with a decreasing probability.              
+                # Choose an integer between 0 and (index - 1) (inclusive)                
+                r = random.randrange(index)                
+                if r < SAMPLE_COUNT:                        
+                        sample_titles[r] = line
+print sample_titles
+[edit]See also
+
+Moving average
+Fisher-Yates shuffle
+[edit]References
+
+^ Random Sampling with a Reservoir
+^ http://gregable.com/2007/10/reservoir-sampling.html
+^ Dictionary of Algorithms and Data Structures
+View page ratings
+Rate this page
+What's this?
+Trustworthy
+Objective
+Complete
+Well-written
+I am highly knowledgeable about this topic (optional)
+
+Submit ratings
