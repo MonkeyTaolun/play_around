@@ -46,13 +46,13 @@ int main(int argc, char * argv[]){
   pthread_attr_destroy(&attr);
 
   for(t=0; t<NUM_THREADS; ++t){
-    rc = pthread_join(thread[t], &status);
+    rc = pthread_join(thread[t], NULL);
     if(rc) {
       printf("ERROR; return code from pthread pthread_join() is %d\n", rc);
       exit(-1);
     }
 
-    printf("Main: completed join with thread %ld having a status of %ld\n", t, (long)status);
+    printf("Main: completed join with thread %ld having a status of \n", t );
   }
 
   printf("Main: program completed. Exiting.\n");
