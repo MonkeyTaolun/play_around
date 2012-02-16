@@ -3,7 +3,7 @@ using namespace std;
 struct TT {
   int value;
 };
-void ttt(const TT * a) {
+void ttt(TT * const a) {
   a->value = 7;
 }
 int main(){
