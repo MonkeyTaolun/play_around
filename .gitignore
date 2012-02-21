@@ -1,4 +1,5 @@
 test/
+*.class
 .*.swp
 *_new.*
 *.out
